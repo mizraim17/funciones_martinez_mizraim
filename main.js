@@ -10,8 +10,8 @@ class Persona {
 	) {
 		this.nombre = nombre;
 		this.edad = edad;
-		this.precioVenta = telefono;
-		this.telefono = sueldo;
+		this.telefono = telefono;
+		this.sueldo = sueldo;
 		this.credito = credito;
 		this.dineroPrestar = dineroPrestar;
 		this.tiempoPagar = tiempoPagar;
@@ -23,9 +23,9 @@ let obtenerDatos = () => {
 	let edad = prompt("Ingresa la Edad");
 	let telefono = prompt("Ingresa Teléfono");
 	let sueldo = prompt("Ingresa Sueldo");
-	let credito = prompt("Creditos activos");
-	let dineroPrestar = prompt("Dinero a prestar");
+	let dineroPrestar = prompt("Dinero Solicitado");
 	let tiempoPagar = prompt("En cuánto tiempo se cubrirá el crédito (meses) ");
+	let credito = prompt("Creditos activos");
 
 	const objetoCliente = new Persona(
 		nombre,
@@ -42,7 +42,7 @@ let obtenerDatos = () => {
 
 let instrucciones = () => {
 	const OPCION = prompt(
-		"Bienvenido, seleccione una opción (ESC para salir)\n1. Crear perfil  \n2.  Calcular Datos \n pulsa q para salir "
+		"Bienvenido, seleccione una opción (ESC para salir)\n1. Calcular crédito  \n2.Ver Datos introducidos \n 3.- Para salir "
 	);
 	return OPCION;
 };
@@ -50,16 +50,12 @@ let instrucciones = () => {
 let menu = () => {
 	let opcion = instrucciones();
 
-	console.log("opcion", opcion);
-
-	while (opcion?.toLowerCase() != "s") {
+	while (opcion != "3") {
 		if (opcion != "") {
 			opcion = parseInt(opcion);
 			if (!isNaN(opcion)) {
 				switch (opcion) {
 					case 1:
-						let datosCliente = obtenerDatos();
-
 						if (datosCliente.tiempoPagar < 6) {
 							interesTiempo = 3 * (datosCliente.dineroPrestar / 1.1);
 						} else if (
@@ -71,28 +67,52 @@ let menu = () => {
 							interesTiempo = 12 * (datosCliente.dineroPrestar / 1.1);
 						}
 
-						creditoAprobado =
-							datosCliente.dineroPrestar - datosCliente.dineroPrestar / 1.1;
-
-						interesTotal =
-							datosCliente.dineroPrestar / 1.1 +
-							datosCliente.credito * (datosCliente.dineroPrestar / 1.1) +
-							datosCliente.tiempoPagar;
-
-						alert(
-							"Querido " +
-								datosCliente.nombre +
-								" tu crédito se aprobo por " +
-								creditoAprobado +
-								" con el siguiente interes " +
-								interesTotal
+						interesTotal = Math.round(
+							datosCliente.dineroPrestar * 0.01 +
+								datosCliente.credito * (datosCliente.dineroPrestar * 0.01) +
+								datosCliente.tiempoPagar * (datosCliente.dineroPrestar * 0.05)
 						);
+
+						totalPagar = parseInt(datosCliente.dineroPrestar) + interesTotal;
+						// debugger;
+
+						if (datosCliente.edad < 18) {
+							alert("No se aprobó el crédito porque eres menor de edad");
+						}
+						// else if (datosCliente.sueldo < datosCliente.dineroPrestar) {
+
+						// 	alert("No se aprobó el crédito porque no tienes solvencia");
+						else {
+							alert(
+								"Estimado " +
+									datosCliente.nombre +
+									" tu crédito se aprobó por " +
+									datosCliente.dineroPrestar +
+									"pesos y al final pagarias l " +
+									totalPagar +
+									" pesos"
+							);
+						}
 
 						break;
 
 					case 2:
-						console.log(datosCliente.dineroPrestar);
-
+						alert(
+							"Tus datos son:\n" +
+								"Nombre: " +
+								datosCliente.nombre +
+								"\nEdad: " +
+								datosCliente.edad +
+								"\nTélefono: " +
+								datosCliente.telefono +
+								"\nSueldo: " +
+								datosCliente.sueldo +
+								"\nDinero Solicitado: " +
+								datosCliente.dineroPrestar +
+								"\nTiempo para liquidar " +
+								datosCliente.tiempoPagar +
+								" meses"
+						);
 						break;
 
 					default:
@@ -105,8 +125,10 @@ let menu = () => {
 		} else {
 			alert("Seleccione la opción");
 		}
-		// opcionSeleccionada = instrucciones();
+		opcion = instrucciones();
 	}
 };
+
+let datosCliente = obtenerDatos();
 
 menu();
